@@ -28,8 +28,9 @@ const benefits = [
     surface: 'bg-[#e89bf4]',
   },
   {
-    title: 'Seguimiento de avance',
-    description: 'Registro de participación, progreso y finalización.',
+    title: 'Dashboard y reportes',
+    description:
+      'Visualiza participación, progreso, resultados, finalización y certificados desde un panel centralizado.',
     span: 'lg:col-span-2',
     surface: 'bg-[#fc8799]',
   },

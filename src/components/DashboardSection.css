@@ -1,0 +1,21 @@
+.dashboard-bar {
+  animation: dashboard-bar-in 900ms cubic-bezier(0.22, 1, 0.36, 1) both;
+  animation-delay: var(--bar-delay, 0ms);
+  transform-origin: bottom;
+}
+
+@keyframes dashboard-bar-in {
+  from {
+    transform: scaleY(0);
+  }
+
+  to {
+    transform: scaleY(1);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .dashboard-bar {
+    animation: none;
+  }
+}
