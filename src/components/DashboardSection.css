@@ -1,7 +1,29 @@
 .dashboard-bar {
+  transform: scaleY(0);
+  transform-origin: bottom;
+}
+
+.dashboard-mockup.is-active .dashboard-bar {
   animation: dashboard-bar-in 900ms cubic-bezier(0.22, 1, 0.36, 1) both;
   animation-delay: var(--bar-delay, 0ms);
-  transform-origin: bottom;
+}
+
+.dashboard-progress {
+  transform: scaleX(0);
+  transform-origin: left;
+}
+
+.dashboard-mockup.is-active .dashboard-progress {
+  animation: dashboard-progress-in 900ms 250ms cubic-bezier(0.22, 1, 0.36, 1) both;
+}
+
+.dashboard-number {
+  opacity: 0;
+  transform: translateY(6px);
+}
+
+.dashboard-mockup.is-active .dashboard-number {
+  animation: dashboard-number-in 500ms ease-out both;
 }
 
 @keyframes dashboard-bar-in {
@@ -14,8 +36,25 @@
   }
 }
 
+@keyframes dashboard-progress-in {
+  to {
+    transform: scaleX(1);
+  }
+}
+
+@keyframes dashboard-number-in {
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
 @media (prefers-reduced-motion: reduce) {
-  .dashboard-bar {
+  .dashboard-bar,
+  .dashboard-progress,
+  .dashboard-number {
+    opacity: 1;
+    transform: none;
     animation: none;
   }
 }
