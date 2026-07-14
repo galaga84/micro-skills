@@ -98,6 +98,7 @@ function CertificateIcon() {
 
 function PhoneMockup({ isActive }) {
   const [visibleMessages, setVisibleMessages] = useState(0)
+  const [replayKey, setReplayKey] = useState(0)
   const messageListRef = useRef(null)
 
   useEffect(() => {
@@ -112,7 +113,7 @@ function PhoneMockup({ isActive }) {
     )
 
     return () => timers.forEach(timer => window.clearTimeout(timer))
-  }, [isActive])
+  }, [isActive, replayKey])
 
   useEffect(() => {
     const messageList = messageListRef.current
@@ -137,9 +138,31 @@ function PhoneMockup({ isActive }) {
   const responseIndex = conversation.findIndex(message => message.type === 'sent')
   const isTypingResponse = visibleMessages === responseIndex
 
+  const restartConversation = () => {
+    setVisibleMessages(0)
+    setReplayKey(previous => previous + 1)
+  }
+
   return (
     <div className="relative mx-auto w-full max-w-[350px]">
       <div className="absolute -inset-8 -z-10 rounded-full bg-emerald-200/35 blur-3xl" />
+      <button
+        type="button"
+        onClick={restartConversation}
+        disabled={!isActive}
+        aria-label="Reiniciar conversación"
+        title="Reiniciar conversación"
+        className="absolute right-3 top-6 z-20 grid size-9 place-items-center rounded-full border border-white/20 bg-neutral-900/75 text-white shadow-lg backdrop-blur-sm transition hover:scale-105 hover:bg-neutral-900 disabled:cursor-not-allowed disabled:opacity-40"
+      >
+        <svg viewBox="0 0 24 24" className="size-4 fill-none stroke-current" aria-hidden="true">
+          <path
+            d="M20 11a8 8 0 1 0-2.34 5.66M20 5v6h-6"
+            strokeWidth="2"
+            strokeLinecap="round"
+            strokeLinejoin="round"
+          />
+        </svg>
+      </button>
       <div className="learning-phone mockup-phone shadow-2xl">
         <div className="mockup-phone-camera" />
         <div className="mockup-phone-display">

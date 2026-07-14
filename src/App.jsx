@@ -1,5 +1,6 @@
 import BenefitsSection from './components/BenefitsSection.jsx'
 import ContactSection from './components/ContactSection.jsx'
+import DashboardSection from './components/DashboardSection.jsx'
 import Footer from './components/Footer.jsx'
 import Hero from './components/Hero.jsx'
 import HowItWorks from './components/HowItWorks.jsx'
@@ -14,6 +15,7 @@ function App() {
       <HowItWorks />
       <ProblemSection />
       <BenefitsSection />
+      <DashboardSection />
       <ContactSection />
       <Footer />
     </>
