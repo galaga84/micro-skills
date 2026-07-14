@@ -1,6 +1,6 @@
 function Navbar() {
   return (
-    <div className="navbar bg-base-100 w-full shadow-sm">
+    <div className="navbar bg-base-100 sticky top-0 z-50 w-full shadow-sm">
       <div className="navbar-start">
         <div className="dropdown">
           <div tabIndex={0} role="button" className="btn btn-ghost lg:hidden">
@@ -40,17 +40,9 @@ function Navbar() {
                 Beneficios
               </a>
             </li>
-            <li>
-              <a
-                href="#casos-de-uso"
-                className="rounded-full transition-colors"
-              >
-                Casos de uso
-              </a>
-            </li>
           </ul>
         </div>
-        <a href="#inicio" className="btn btn-ghost text-xl">
+        <a href="#inicio" className="inline-flex min-h-12 items-center px-4 text-xl">
           Micro Skills
         </a>
       </div>
@@ -73,21 +65,13 @@ function Navbar() {
               Beneficios
             </a>
           </li>
-          <li>
-            <a
-              href="#casos-de-uso"
-              className="rounded-full transition-colors"
-            >
-              Casos de uso
-            </a>
-          </li>
         </ul>
       </div>
 
       <div className="navbar-end">
         <a
           href="#contacto"
-          className="btn rounded-full border-black bg-black px-6 text-white hover:border-neutral-800 hover:bg-neutral-800"
+          className="btn rounded-full border-[#70ff47] bg-[#70ff47] px-6 text-neutral-950 hover:border-[#5ee63a] hover:bg-[#5ee63a]"
         >
           Contacto
         </a>

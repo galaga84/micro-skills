@@ -1,0 +1,107 @@
+.benefit-card {
+  visibility: hidden;
+  opacity: 0;
+  transform: translateY(18px) scale(0.97);
+}
+
+.benefit-card.is-visible {
+  visibility: visible;
+  animation: benefit-card-in 700ms cubic-bezier(0.22, 1, 0.36, 1) both;
+  animation-delay: var(--benefit-delay, 0ms);
+}
+
+.benefit-card-surface {
+  border-radius: 1.5rem;
+  isolation: isolate;
+  transform: scale(1);
+  transform-origin: center;
+  transition:
+    transform 300ms cubic-bezier(0.22, 1, 0.36, 1),
+    box-shadow 300ms ease;
+  will-change: transform;
+}
+
+.benefit-card-surface .image-full > figure {
+  overflow: hidden;
+  border-radius: inherit;
+}
+
+.benefit-card-surface .image-full::before {
+  opacity: 0;
+}
+
+.benefit-track {
+  display: flex;
+  width: max-content;
+  animation: benefit-row-scroll 32s linear infinite;
+  animation-play-state: paused;
+  will-change: transform;
+}
+
+.benefit-track.is-scrolling {
+  animation-play-state: running;
+}
+
+.benefit-track-reverse {
+  animation-name: benefit-row-scroll-reverse;
+}
+
+@media (hover: hover) and (pointer: fine) {
+  .benefit-card:hover .benefit-card-surface {
+    transform: scale(1.025);
+    box-shadow: 0 18px 40px rgb(0 0 0 / 10%);
+  }
+
+  .benefit-row:hover .benefit-track {
+    animation-play-state: paused;
+  }
+}
+
+@keyframes benefit-row-scroll {
+  to {
+    transform: translateX(-50%);
+  }
+}
+
+@keyframes benefit-row-scroll-reverse {
+  from {
+    transform: translateX(-50%);
+  }
+
+  to {
+    transform: translateX(0);
+  }
+}
+
+@keyframes benefit-card-in {
+  from {
+    opacity: 0;
+    transform: translateY(18px) scale(0.97);
+  }
+
+  to {
+    opacity: 1;
+    transform: translateY(0) scale(1);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .benefit-card,
+  .benefit-card.is-visible {
+    visibility: visible;
+    opacity: 1;
+    transform: none;
+    animation: none;
+  }
+
+  .benefit-card-surface {
+    transform: none;
+    transition: none;
+  }
+
+  .benefit-track,
+  .benefit-track.is-scrolling {
+    transform: none;
+    animation: none;
+  }
+}
