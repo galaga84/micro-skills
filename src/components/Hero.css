@@ -1,3 +1,9 @@
+.hero-title {
+  display: block;
+  max-width: 100%;
+  white-space: pre;
+}
+
 @keyframes subtitle-reveal {
   from {
     opacity: 0;
