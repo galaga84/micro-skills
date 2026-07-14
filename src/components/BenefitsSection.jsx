@@ -96,9 +96,11 @@ function BenefitRow({ benefits: rowBenefits, rowIndex, isVisible }) {
     let resumeTimer
     let isPaused = false
     let initialized = false
+    let automaticPosition = 0
     let previousTime = performance.now()
 
     const pause = () => {
+      automaticPosition = row.scrollLeft
       isPaused = true
       window.clearTimeout(resumeTimer)
     }
@@ -116,17 +118,22 @@ function BenefitRow({ benefits: rowBenefits, rowIndex, isVisible }) {
 
       if (mobileQuery.matches && setWidth > 0) {
         if (!initialized) {
-          if (rowIndex % 2 === 1) row.scrollLeft = setWidth
+          automaticPosition = rowIndex % 2 === 1 ? setWidth : 0
+          row.scrollLeft = automaticPosition
           initialized = true
         }
 
         if (!isPaused) {
           const elapsed = Math.min(currentTime - previousTime, 32)
           const direction = rowIndex % 2 === 1 ? -1 : 1
-          row.scrollLeft += direction * elapsed * 0.022
+          automaticPosition += direction * elapsed * 0.03
 
-          if (row.scrollLeft >= setWidth) row.scrollLeft -= setWidth
-          if (row.scrollLeft <= 0 && direction < 0) row.scrollLeft += setWidth
+          if (automaticPosition >= setWidth) automaticPosition -= setWidth
+          if (automaticPosition < 0) automaticPosition += setWidth
+
+          row.scrollLeft = automaticPosition
+        } else {
+          automaticPosition = row.scrollLeft
         }
       } else {
         initialized = false

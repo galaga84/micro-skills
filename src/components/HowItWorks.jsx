@@ -140,7 +140,7 @@ function PhoneMockup({ isActive }) {
   return (
     <div className="relative mx-auto w-full max-w-[350px]">
       <div className="absolute -inset-8 -z-10 rounded-full bg-emerald-200/35 blur-3xl" />
-      <div className="mockup-phone shadow-2xl">
+      <div className="learning-phone mockup-phone shadow-2xl">
         <div className="mockup-phone-camera" />
         <div className="mockup-phone-display">
           <div className="relative flex h-full flex-col bg-[#efeae2]">

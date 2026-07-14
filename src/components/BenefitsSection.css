@@ -35,7 +35,7 @@
   overflow-x: auto;
   overscroll-behavior-inline: contain;
   scroll-padding-inline: 1.25rem;
-  scroll-snap-type: inline proximity;
+  scroll-snap-type: none;
   scrollbar-width: none;
   -webkit-overflow-scrolling: touch;
 }
