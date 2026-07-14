@@ -195,7 +195,9 @@ function DashboardMockup({ isActive }) {
 function DashboardSection() {
   const [showContent, setShowContent] = useState(false)
   const [isCardVisible, setIsCardVisible] = useState(false)
+  const [isDashboardVisible, setIsDashboardVisible] = useState(false)
   const cardRef = useRef(null)
+  const dashboardRef = useRef(null)
 
   useEffect(() => {
     const card = cardRef.current
@@ -217,6 +219,27 @@ function DashboardSection() {
     observer.observe(card)
     return () => observer.disconnect()
   }, [])
+
+  useEffect(() => {
+    const dashboard = dashboardRef.current
+    if (!showContent || !dashboard) return undefined
+
+    const observer = new IntersectionObserver(
+      entries => {
+        if (entries[0].isIntersecting) {
+          setIsDashboardVisible(true)
+          observer.disconnect()
+        }
+      },
+      {
+        threshold: 0.35,
+        rootMargin: '0px 0px -8% 0px',
+      },
+    )
+
+    observer.observe(dashboard)
+    return () => observer.disconnect()
+  }, [showContent])
 
   return (
     <section id="reportes" className="scroll-mt-20 p-3 sm:p-5">
@@ -259,12 +282,13 @@ function DashboardSection() {
           </div>
 
           <div
+            ref={dashboardRef}
             aria-hidden={!showContent}
             className={`mt-12 sm:mt-16 ${
               showContent ? 'subtitle-reveal' : 'invisible opacity-0'
             }`}
           >
-            <DashboardMockup isActive={showContent} />
+            <DashboardMockup isActive={isDashboardVisible} />
           </div>
         </div>
       </div>
