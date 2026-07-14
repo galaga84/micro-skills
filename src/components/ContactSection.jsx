@@ -87,7 +87,7 @@ function ContactSection() {
               <ul className="mt-9 space-y-4">
                 {highlights.map(highlight => (
                   <li key={highlight} className="flex items-start gap-3 font-medium text-white/90">
-                    <span className="mt-0.5 text-blue-400">
+                    <span className="mt-0.5 text-[#f78db3]">
                       <CheckIcon />
                     </span>
                     {highlight}

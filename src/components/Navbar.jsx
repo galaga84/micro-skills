@@ -42,8 +42,9 @@ function Navbar() {
             </li>
           </ul>
         </div>
-        <a href="#inicio" className="inline-flex min-h-12 items-center px-4 text-xl">
-          Micro Skills
+        <a href="#inicio" className="inline-flex min-h-12 items-center px-4 text-xl font-bold">
+          <span className="text-neutral-950">Micro</span>
+          <span className="ml-1.5 text-[#ff8dc6]">Skills</span>
         </a>
       </div>
 
