@@ -47,6 +47,22 @@
   background: rgb(0 0 0 / 20%);
 }
 
+@media (max-width: 767px) {
+  .learning-phone {
+    pointer-events: none;
+  }
+
+  .learning-phone .phone-chat-scroll {
+    overflow-y: hidden;
+    overscroll-behavior: auto;
+    scrollbar-width: none;
+  }
+
+  .learning-phone .phone-chat-scroll::-webkit-scrollbar {
+    display: none;
+  }
+}
+
 .chat-video-play {
   animation: chat-video-pulse 1.8s ease-in-out infinite;
 }
