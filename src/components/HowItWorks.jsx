@@ -169,9 +169,11 @@ function PhoneMockup({ isActive }) {
           <div className="relative flex h-full flex-col bg-[#efeae2]">
 
           <div className="flex items-center gap-3 bg-[#075e54] px-4 pb-3 pt-9 text-white">
-            <div className="grid size-10 place-items-center rounded-full bg-white/20 text-sm font-semibold">
-              MS
-            </div>
+            <img
+              src={`${import.meta.env.BASE_URL}favicon.svg`}
+              alt=""
+              className="size-10 shrink-0 rounded-full object-cover"
+            />
             <div className="min-w-0 flex-1">
               <p className="truncate text-sm font-semibold">Micro Skills</p>
               <p className="text-xs text-white/75">
