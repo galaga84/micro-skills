@@ -51,16 +51,78 @@ const conversation = [
   },
   {
     type: 'received',
+    label: 'Infografía',
+    content: 'Revisa esta infografía con las ideas principales de la cápsula.',
+    time: '09:05',
+    infographic: true,
+  },
+  {
+    type: 'received',
+    label: 'Pregunta',
+    content: 'Según la infografía, ¿cómo debes aplicar un nuevo procedimiento?',
+    time: '09:06',
+    options: [
+      { key: 'A', text: 'Memorizarlo sin comprobar el resultado.' },
+      { key: 'B', text: 'Seguir los pasos y verificar el resultado.' },
+      { key: 'C', text: 'Omitir las revisiones para terminar antes.' },
+    ],
+  },
+  {
+    type: 'sent',
+    label: 'Tu respuesta',
+    content: 'B. Seguir los pasos y verificar el resultado.',
+    time: '09:07',
+  },
+  {
+    type: 'received',
+    label: 'Respuesta correcta',
+    content: '¡Muy bien! Comprendiste los puntos clave de la infografía.',
+    time: '09:07',
+    correct: true,
+  },
+  {
+    type: 'received',
+    label: 'Actividad interactiva',
+    content: 'Ahora ordena los pasos para completar correctamente el proceso.',
+    time: '09:08',
+    interactive: true,
+  },
+  {
+    type: 'received',
+    label: 'Pregunta',
+    content: '¿Qué secuencia aplicaste en la actividad?',
+    time: '09:09',
+    options: [
+      { key: 'A', text: 'Ejecutar, revisar y confirmar.' },
+      { key: 'B', text: 'Revisar, ejecutar y confirmar.' },
+      { key: 'C', text: 'Confirmar, ejecutar y revisar.' },
+    ],
+  },
+  {
+    type: 'sent',
+    label: 'Tu respuesta',
+    content: 'B. Revisar, ejecutar y confirmar.',
+    time: '09:10',
+  },
+  {
+    type: 'received',
+    label: 'Respuesta correcta',
+    content: '¡Correcto! Completaste la actividad con la secuencia adecuada.',
+    time: '09:10',
+    correct: true,
+  },
+  {
+    type: 'received',
     label: 'Curso completado',
     content: '¡Felicitaciones, Camila! Completaste el curso y aprobaste la evaluación.',
-    time: '09:05',
+    time: '09:11',
     correct: true,
   },
   {
     type: 'received',
     label: 'Tu certificado',
     content: 'Tu certificado ya está disponible:',
-    time: '09:05',
+    time: '09:11',
     certificate: true,
   },
 ]
@@ -107,7 +169,10 @@ function PhoneMockup({ isActive }) {
       return undefined
     }
 
-    const messageDelays = [900, 2600, 4400, 6500, 9000, 11200, 13400, 15400]
+    const messageDelays = [
+      900, 2600, 4400, 6500, 9000, 11200, 13400, 15500, 17800, 20000, 22100, 24400,
+      26600, 28800, 30900, 32900,
+    ]
     const timers = messageDelays.map((delay, index) =>
       window.setTimeout(() => setVisibleMessages(index + 1), delay),
     )
@@ -135,8 +200,7 @@ function PhoneMockup({ isActive }) {
     return () => window.cancelAnimationFrame(animationFrame)
   }, [visibleMessages])
 
-  const responseIndex = conversation.findIndex(message => message.type === 'sent')
-  const isTypingResponse = visibleMessages === responseIndex
+  const isTypingResponse = conversation[visibleMessages]?.type === 'sent'
 
   const restartConversation = () => {
     setVisibleMessages(0)
@@ -186,9 +250,9 @@ function PhoneMockup({ isActive }) {
           </div>
 
           <div ref={messageListRef} className="phone-chat-scroll flex-1 space-y-2.5 overflow-y-auto px-3 py-4">
-            {conversation.slice(0, visibleMessages).map(message => (
+            {conversation.slice(0, visibleMessages).map((message, messageIndex) => (
               <div
-                key={message.label}
+                key={`${message.label}-${message.time}-${messageIndex}`}
                 className={`chat-message is-visible flex ${
                   message.type === 'sent' ? 'justify-end' : 'justify-start'
                 }`}
@@ -212,6 +276,43 @@ function PhoneMockup({ isActive }) {
                     )}
                     <p className="text-[13px] leading-snug text-neutral-800">{message.content}</p>
                   </div>
+                  {message.infographic && (
+                    <div className="mt-2 overflow-hidden rounded-lg border border-neutral-200 bg-[#f7f7f2]">
+                      <div className="bg-[#70ff47] px-3 py-2 text-[11px] font-bold text-neutral-900">
+                        Una ruta simple para avanzar
+                      </div>
+                      <div className="grid grid-cols-3 gap-1.5 p-2">
+                        {['Revisar', 'Aplicar', 'Confirmar'].map((step, stepIndex) => (
+                          <div
+                            key={step}
+                            className="rounded-md bg-white px-1 py-2 text-center shadow-sm"
+                          >
+                            <span className="mx-auto mb-1 grid size-5 place-items-center rounded-full bg-[#f78db3] text-[9px] font-bold text-neutral-900">
+                              {stepIndex + 1}
+                            </span>
+                            <span className="text-[9px] font-semibold text-neutral-700">{step}</span>
+                          </div>
+                        ))}
+                      </div>
+                    </div>
+                  )}
+                  {message.interactive && (
+                    <div className="mt-2 rounded-lg bg-[#17122b] p-2.5 text-white">
+                      <p className="text-[9px] font-semibold uppercase tracking-wider text-[#e7a4f0]">
+                        Ordena la secuencia
+                      </p>
+                      <div className="mt-2 flex items-center gap-1 text-[9px] font-semibold">
+                        <span className="rounded bg-white/10 px-1.5 py-1">Revisar</span>
+                        <span className="text-white/45">→</span>
+                        <span className="rounded bg-white/10 px-1.5 py-1">Ejecutar</span>
+                        <span className="text-white/45">→</span>
+                        <span className="rounded bg-white/10 px-1.5 py-1">Confirmar</span>
+                      </div>
+                      <div className="mt-2 rounded-full bg-[#70ff47] px-2 py-1 text-center text-[9px] font-bold text-neutral-950">
+                        Iniciar actividad
+                      </div>
+                    </div>
+                  )}
                   {message.options && (
                     <div className="mt-2 overflow-hidden rounded-lg border border-neutral-200 bg-white">
                       {message.options.map((option, optionIndex) => (
