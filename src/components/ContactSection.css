@@ -1,0 +1,31 @@
+.contact-form-aura {
+  --aura-radius: 1.75rem;
+}
+
+.contact-field {
+  width: 100%;
+  border: 1px solid #cbd5e1;
+  border-radius: 0.65rem;
+  background: #f8fafc;
+  padding: 0.95rem 1rem;
+  color: #171717;
+  outline: none;
+  transition:
+    border-color 180ms ease,
+    box-shadow 180ms ease,
+    background-color 180ms ease;
+}
+
+.contact-field::placeholder {
+  color: #94a3b8;
+}
+
+.contact-field:hover {
+  border-color: #94a3b8;
+}
+
+.contact-field:focus {
+  border-color: #3b82f6;
+  background: #fff;
+  box-shadow: 0 0 0 3px rgb(59 130 246 / 15%);
+}
