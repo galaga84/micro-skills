@@ -1,4 +1,4 @@
-import { useState } from 'react'
+import { useEffect, useRef, useState } from 'react'
 import TextType from './TextType.jsx'
 import './BenefitsSection.css'
 
@@ -85,8 +85,73 @@ function BenefitCard({ benefit, index, isVisible }) {
 }
 
 function BenefitRow({ benefits: rowBenefits, rowIndex, isVisible }) {
+  const rowRef = useRef(null)
+
+  useEffect(() => {
+    const row = rowRef.current
+    if (!row || !isVisible) return undefined
+
+    const mobileQuery = window.matchMedia('(max-width: 767px)')
+    let animationFrame
+    let resumeTimer
+    let isPaused = false
+    let initialized = false
+    let previousTime = performance.now()
+
+    const pause = () => {
+      isPaused = true
+      window.clearTimeout(resumeTimer)
+    }
+
+    const resume = () => {
+      window.clearTimeout(resumeTimer)
+      resumeTimer = window.setTimeout(() => {
+        isPaused = false
+      }, 1400)
+    }
+
+    const animate = currentTime => {
+      const firstSet = row.querySelector('.benefit-set')
+      const setWidth = firstSet?.offsetWidth || 0
+
+      if (mobileQuery.matches && setWidth > 0) {
+        if (!initialized) {
+          if (rowIndex % 2 === 1) row.scrollLeft = setWidth
+          initialized = true
+        }
+
+        if (!isPaused) {
+          const elapsed = Math.min(currentTime - previousTime, 32)
+          const direction = rowIndex % 2 === 1 ? -1 : 1
+          row.scrollLeft += direction * elapsed * 0.022
+
+          if (row.scrollLeft >= setWidth) row.scrollLeft -= setWidth
+          if (row.scrollLeft <= 0 && direction < 0) row.scrollLeft += setWidth
+        }
+      } else {
+        initialized = false
+      }
+
+      previousTime = currentTime
+      animationFrame = window.requestAnimationFrame(animate)
+    }
+
+    row.addEventListener('pointerdown', pause)
+    row.addEventListener('pointerup', resume)
+    row.addEventListener('pointercancel', resume)
+    animationFrame = window.requestAnimationFrame(animate)
+
+    return () => {
+      window.cancelAnimationFrame(animationFrame)
+      window.clearTimeout(resumeTimer)
+      row.removeEventListener('pointerdown', pause)
+      row.removeEventListener('pointerup', resume)
+      row.removeEventListener('pointercancel', resume)
+    }
+  }, [isVisible, rowIndex])
+
   return (
-    <div className="benefit-row overflow-hidden py-4">
+    <div ref={rowRef} className="benefit-row py-4">
       <div
         className={`benefit-track ${rowIndex % 2 === 1 ? 'benefit-track-reverse' : ''} ${
           isVisible ? 'is-scrolling' : ''
@@ -95,7 +160,9 @@ function BenefitRow({ benefits: rowBenefits, rowIndex, isVisible }) {
         {[0, 1].map(copyIndex => (
           <div
             key={copyIndex}
-            className="flex shrink-0 gap-4 pe-4"
+            className={`benefit-set flex shrink-0 gap-4 pe-4 ${
+              copyIndex === 1 ? 'benefit-set-copy' : ''
+            }`}
             aria-hidden={copyIndex === 1 ? 'true' : undefined}
           >
             {rowBenefits.map((benefit, index) => (

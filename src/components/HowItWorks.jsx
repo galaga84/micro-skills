@@ -30,13 +30,38 @@ const conversation = [
     label: 'Pregunta',
     content: '¿Qué debes hacer antes de comenzar el procedimiento?',
     time: '09:03',
+    options: [
+      { key: 'A', text: 'Comenzar de inmediato.' },
+      { key: 'B', text: 'Revisar las instrucciones y confirmar los pasos.' },
+      { key: 'C', text: 'Esperar sin revisar la información.' },
+    ],
   },
   {
     type: 'sent',
+    label: 'Tu respuesta',
+    content: 'B. Revisar las instrucciones y confirmar los pasos.',
+    time: '09:04',
+  },
+  {
+    type: 'received',
     label: 'Respuesta correcta',
-    content: 'Revisar las instrucciones y confirmar los pasos a seguir.',
+    content: '¡Correcto! Ya puedes continuar con la siguiente cápsula.',
     time: '09:04',
     correct: true,
+  },
+  {
+    type: 'received',
+    label: 'Curso completado',
+    content: '¡Felicitaciones, Camila! Completaste el curso y aprobaste la evaluación.',
+    time: '09:05',
+    correct: true,
+  },
+  {
+    type: 'received',
+    label: 'Tu certificado',
+    content: 'Tu certificado ya está disponible:',
+    time: '09:05',
+    certificate: true,
   },
 ]
 
@@ -58,8 +83,22 @@ function CheckIcon() {
   )
 }
 
+function CertificateIcon() {
+  return (
+    <svg viewBox="0 0 24 24" className="size-5 fill-none stroke-current" aria-hidden="true">
+      <path
+        d="M7 3h7l4 4v14H7zM14 3v5h4M9.5 13h6M9.5 16h4"
+        strokeWidth="1.8"
+        strokeLinecap="round"
+        strokeLinejoin="round"
+      />
+    </svg>
+  )
+}
+
 function PhoneMockup({ isActive }) {
   const [visibleMessages, setVisibleMessages] = useState(0)
+  const messageListRef = useRef(null)
 
   useEffect(() => {
     if (!isActive) {
@@ -67,7 +106,7 @@ function PhoneMockup({ isActive }) {
       return undefined
     }
 
-    const messageDelays = [900, 2600, 4400, 6500, 9000]
+    const messageDelays = [900, 2600, 4400, 6500, 9000, 11200, 13400, 15400]
     const timers = messageDelays.map((delay, index) =>
       window.setTimeout(() => setVisibleMessages(index + 1), delay),
     )
@@ -75,14 +114,36 @@ function PhoneMockup({ isActive }) {
     return () => timers.forEach(timer => window.clearTimeout(timer))
   }, [isActive])
 
-  const isTypingResponse = visibleMessages === conversation.length - 1
+  useEffect(() => {
+    const messageList = messageListRef.current
+    if (!messageList) return undefined
+
+    if (visibleMessages === 0) {
+      messageList.scrollTop = 0
+      return undefined
+    }
+
+    const animationFrame = window.requestAnimationFrame(() => {
+      const reduceMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches
+      messageList.scrollTo({
+        top: messageList.scrollHeight,
+        behavior: reduceMotion ? 'auto' : 'smooth',
+      })
+    })
+
+    return () => window.cancelAnimationFrame(animationFrame)
+  }, [visibleMessages])
+
+  const responseIndex = conversation.findIndex(message => message.type === 'sent')
+  const isTypingResponse = visibleMessages === responseIndex
 
   return (
     <div className="relative mx-auto w-full max-w-[350px]">
       <div className="absolute -inset-8 -z-10 rounded-full bg-emerald-200/35 blur-3xl" />
-      <div className="rounded-[2.75rem] border-[7px] border-neutral-900 bg-neutral-900 p-1.5 shadow-2xl">
-        <div className="relative overflow-hidden rounded-[2.1rem] bg-[#efeae2]">
-          <div className="absolute left-1/2 top-2 z-20 h-5 w-24 -translate-x-1/2 rounded-full bg-neutral-900" />
+      <div className="mockup-phone shadow-2xl">
+        <div className="mockup-phone-camera" />
+        <div className="mockup-phone-display">
+          <div className="relative flex h-full flex-col bg-[#efeae2]">
 
           <div className="flex items-center gap-3 bg-[#075e54] px-4 pb-3 pt-9 text-white">
             <div className="grid size-10 place-items-center rounded-full bg-white/20 text-sm font-semibold">
@@ -99,14 +160,13 @@ function PhoneMockup({ isActive }) {
             <span className="size-1 rounded-full bg-white/80" />
           </div>
 
-          <div className="space-y-2.5 px-3 py-4">
-            {conversation.map((message, index) => (
+          <div ref={messageListRef} className="phone-chat-scroll flex-1 space-y-2.5 overflow-y-auto px-3 py-4">
+            {conversation.slice(0, visibleMessages).map(message => (
               <div
                 key={message.label}
-                aria-hidden={index >= visibleMessages}
-                className={`chat-message flex ${
-                  index < visibleMessages ? 'is-visible' : ''
-                } ${message.type === 'sent' ? 'justify-end' : 'justify-start'}`}
+                className={`chat-message is-visible flex ${
+                  message.type === 'sent' ? 'justify-end' : 'justify-start'
+                }`}
               >
                 <div
                   className={`max-w-[88%] rounded-xl px-3 py-2 shadow-sm ${
@@ -121,12 +181,43 @@ function PhoneMockup({ isActive }) {
                   </div>
                   <div className={message.video ? 'flex items-center gap-3 rounded-lg bg-neutral-900/5 p-2' : ''}>
                     {message.video && (
-                      <span className={index < visibleMessages ? 'chat-video-play' : ''}>
+                      <span className="chat-video-play">
                         <PlayIcon />
                       </span>
                     )}
                     <p className="text-[13px] leading-snug text-neutral-800">{message.content}</p>
                   </div>
+                  {message.options && (
+                    <div className="mt-2 overflow-hidden rounded-lg border border-neutral-200 bg-white">
+                      {message.options.map((option, optionIndex) => (
+                        <div
+                          key={option.key}
+                          className={`flex items-start gap-2 px-2.5 py-2 text-[11px] leading-snug text-neutral-700 ${
+                            optionIndex > 0 ? 'border-t border-neutral-200' : ''
+                          }`}
+                        >
+                          <span className="font-semibold text-[#00a884]">{option.key}</span>
+                          <span>{option.text}</span>
+                        </div>
+                      ))}
+                    </div>
+                  )}
+                  {message.certificate && (
+                    <div className="mt-2 flex items-center gap-2.5 rounded-lg bg-neutral-100 p-2.5">
+                      <span className="grid size-9 shrink-0 place-items-center rounded-lg bg-[#f78db3] text-neutral-950">
+                        <CertificateIcon />
+                      </span>
+                      <div className="min-w-0 flex-1">
+                        <p className="truncate text-[11px] font-semibold text-neutral-800">
+                          Certificado Micro Skills
+                        </p>
+                        <p className="text-[9px] text-neutral-500">PDF · 248 KB</p>
+                      </div>
+                      <span className="grid size-7 shrink-0 place-items-center rounded-full border border-neutral-300 text-sm text-neutral-600">
+                        ↓
+                      </span>
+                    </div>
+                  )}
                   <p className="mt-1 text-right text-[9px] leading-none text-neutral-500">
                     {message.time} {message.type === 'sent' && '✓✓'}
                   </p>
@@ -147,6 +238,7 @@ function PhoneMockup({ isActive }) {
               </span>
             </div>
             <div className="size-9 rounded-full bg-[#00a884]" />
+          </div>
           </div>
         </div>
       </div>

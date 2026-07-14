@@ -1,6 +1,7 @@
 .benefit-card {
   visibility: hidden;
   opacity: 0;
+  scroll-snap-align: center;
   transform: translateY(18px) scale(0.97);
 }
 
@@ -30,20 +31,52 @@
   opacity: 0;
 }
 
+.benefit-row {
+  overflow-x: auto;
+  overscroll-behavior-inline: contain;
+  scroll-padding-inline: 1.25rem;
+  scroll-snap-type: inline proximity;
+  scrollbar-width: none;
+  -webkit-overflow-scrolling: touch;
+}
+
+.benefit-row::-webkit-scrollbar {
+  display: none;
+}
+
 .benefit-track {
   display: flex;
   width: max-content;
-  animation: benefit-row-scroll 32s linear infinite;
-  animation-play-state: paused;
-  will-change: transform;
 }
 
-.benefit-track.is-scrolling {
-  animation-play-state: running;
+.benefit-set:first-child {
+  padding-inline-start: 1.25rem;
 }
 
-.benefit-track-reverse {
-  animation-name: benefit-row-scroll-reverse;
+@media (min-width: 768px) {
+  .benefit-row {
+    overflow: hidden;
+    scroll-snap-type: none;
+  }
+
+  .benefit-track {
+    animation: benefit-row-scroll 32s linear infinite;
+    animation-play-state: paused;
+    will-change: transform;
+  }
+
+  .benefit-track.is-scrolling {
+    animation-play-state: running;
+  }
+
+  .benefit-track-reverse {
+    animation-name: benefit-row-scroll-reverse;
+  }
+
+  .benefit-set:first-child {
+    padding-inline-start: 0;
+  }
+
 }
 
 @media (hover: hover) and (pointer: fine) {

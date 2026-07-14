@@ -26,7 +26,7 @@ function Hero() {
         <TextType
           text={'Aprendizaje breve,\nimpacto real.'}
           as="h1"
-          className="text-center text-7xl font-semibold tracking-tight sm:text-8xl lg:text-9xl"
+          className="hero-title text-center text-[clamp(2rem,8.8vw,8rem)] font-semibold leading-[0.95] tracking-[-0.045em]"
           typingSpeed={50}
           initialDelay={250}
           loop={false}
