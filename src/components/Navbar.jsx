@@ -40,6 +40,11 @@ function Navbar() {
                 Beneficios
               </a>
             </li>
+            <li>
+              <a href="#contacto" className="rounded-full transition-colors">
+                Contacto
+              </a>
+            </li>
           </ul>
         </div>
         <a href="#inicio" className="inline-flex min-h-12 items-center px-4 text-xl font-bold">
@@ -66,6 +71,11 @@ function Navbar() {
               Beneficios
             </a>
           </li>
+          <li>
+            <a href="#contacto" className="rounded-full transition-colors">
+              Contacto
+            </a>
+          </li>
         </ul>
       </div>
 
@@ -74,7 +84,7 @@ function Navbar() {
           href="#contacto"
           className="btn rounded-full border-[#70ff47] bg-[#70ff47] px-6 text-neutral-950 hover:border-[#5ee63a] hover:bg-[#5ee63a]"
         >
-          Contacto
+          Solicitar demo
         </a>
       </div>
     </div>
