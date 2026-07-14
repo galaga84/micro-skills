@@ -5,10 +5,10 @@ import './Hero.css'
 import './HowItWorks.css'
 
 const metrics = [
-  { label: 'Participantes', value: '248', detail: '+12% este mes', color: 'bg-[#70ff47]' },
-  { label: 'Avance promedio', value: '78%', detail: '+8% este mes', color: 'bg-[#f78db3]' },
-  { label: 'Cursos completados', value: '186', detail: '32 esta semana', color: 'bg-[#e89bf4]' },
-  { label: 'Certificados', value: '164', detail: '88% de aprobación', color: 'bg-[#fac90e]' },
+  { label: 'Participantes', value: 248, detail: '+12% este mes', color: 'bg-[#70ff47]' },
+  { label: 'Avance promedio', value: 78, suffix: '%', detail: '+8% este mes', color: 'bg-[#f78db3]' },
+  { label: 'Cursos completados', value: 186, detail: '32 esta semana', color: 'bg-[#e89bf4]' },
+  { label: 'Certificados', value: 164, detail: '88% de aprobación', color: 'bg-[#fac90e]' },
 ]
 
 const weeklyProgress = [42, 55, 48, 66, 72, 81, 78]
@@ -24,9 +24,51 @@ function SidebarIcon({ children }) {
   return <span className="grid size-8 place-items-center rounded-lg bg-white/10 text-xs">{children}</span>
 }
 
-function DashboardMockup() {
+function AnimatedNumber({ value, suffix = '', isActive }) {
+  const [displayValue, setDisplayValue] = useState(0)
+
+  useEffect(() => {
+    if (!isActive) {
+      setDisplayValue(0)
+      return undefined
+    }
+
+    if (window.matchMedia('(prefers-reduced-motion: reduce)').matches) {
+      setDisplayValue(value)
+      return undefined
+    }
+
+    const duration = 900
+    const startTime = performance.now()
+    let animationFrame
+
+    const animate = currentTime => {
+      const progress = Math.min((currentTime - startTime) / duration, 1)
+      const easedProgress = 1 - (1 - progress) ** 3
+      setDisplayValue(Math.round(value * easedProgress))
+
+      if (progress < 1) animationFrame = window.requestAnimationFrame(animate)
+    }
+
+    animationFrame = window.requestAnimationFrame(animate)
+    return () => window.cancelAnimationFrame(animationFrame)
+  }, [isActive, value])
+
   return (
-    <div className="mockup-browser border border-white/15 bg-neutral-800 shadow-2xl">
+    <span>
+      {displayValue}
+      {suffix}
+    </span>
+  )
+}
+
+function DashboardMockup({ isActive }) {
+  return (
+    <div
+      className={`dashboard-mockup mockup-browser border border-white/15 bg-neutral-800 shadow-2xl ${
+        isActive ? 'is-active' : ''
+      }`}
+    >
       <div className="mockup-browser-toolbar">
         <div className="input border-0 bg-neutral-700 text-neutral-300">
           app.microskills.cl/reportes
@@ -80,7 +122,13 @@ function DashboardMockup() {
             {metrics.map(metric => (
               <article key={metric.label} className={`${metric.color} rounded-2xl p-4 sm:p-5`}>
                 <p className="text-xs font-medium text-black/60">{metric.label}</p>
-                <p className="mt-3 text-3xl font-semibold tracking-tight sm:text-4xl">{metric.value}</p>
+                <p className="dashboard-number mt-3 text-3xl font-semibold tracking-tight sm:text-4xl">
+                  <AnimatedNumber
+                    value={metric.value}
+                    suffix={metric.suffix}
+                    isActive={isActive}
+                  />
+                </p>
                 <p className="mt-2 text-[11px] font-medium text-black/55">{metric.detail}</p>
               </article>
             ))}
@@ -126,12 +174,12 @@ function DashboardMockup() {
                     </div>
                     <div className="mt-2 h-2 overflow-hidden rounded-full bg-neutral-100">
                       <div
-                        className="h-full rounded-full bg-[#f78db3]"
+                        className="dashboard-progress h-full rounded-full bg-[#f78db3]"
                         style={{ width: `${course.progress}%` }}
                       />
                     </div>
                     <p className="mt-1 text-right text-[10px] font-semibold text-neutral-500">
-                      {course.progress}%
+                      <AnimatedNumber value={course.progress} suffix="%" isActive={isActive} />
                     </p>
                   </div>
                 ))}
@@ -216,7 +264,7 @@ function DashboardSection() {
               showContent ? 'subtitle-reveal' : 'invisible opacity-0'
             }`}
           >
-            <DashboardMockup />
+            <DashboardMockup isActive={showContent} />
           </div>
         </div>
       </div>
