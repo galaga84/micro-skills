@@ -5,6 +5,7 @@ import './HowItWorks.css'
 
 const SECTION_TITLE = '¿Listo para capacitar a tu equipo de una forma más simple?'
 const MESSAGE_MAX_LENGTH = 500
+const WEB3FORMS_ACCESS_KEY = '7f9b6cca-5085-49dc-a66d-b8e612dce68c'
 
 const highlights = [
   'Sin nuevas aplicaciones ni claves de acceso',
@@ -24,6 +25,7 @@ function ContactSection() {
   const [isCardVisible, setIsCardVisible] = useState(false)
   const [showContent, setShowContent] = useState(false)
   const [messageLength, setMessageLength] = useState(0)
+  const [submitStatus, setSubmitStatus] = useState('idle')
   const cardRef = useRef(null)
 
   useEffect(() => {
@@ -46,6 +48,42 @@ function ContactSection() {
     observer.observe(card)
     return () => observer.disconnect()
   }, [])
+
+  const handleSubmit = async event => {
+    event.preventDefault()
+    const form = event.currentTarget
+    const formData = new FormData(form)
+
+    formData.append('access_key', WEB3FORMS_ACCESS_KEY)
+    formData.append('subject', 'Nueva solicitud de demo desde MicroSkills')
+    formData.append('from_name', 'Sitio web MicroSkills')
+    setSubmitStatus('submitting')
+
+    try {
+      const response = await fetch('https://api.web3forms.com/submit', {
+        method: 'POST',
+        body: formData,
+      })
+      const result = await response.json()
+
+      if (!response.ok || !result.success) {
+        throw new Error(result.message || 'No fue posible enviar el mensaje.')
+      }
+
+      form.reset()
+      setMessageLength(0)
+      setSubmitStatus('success')
+    } catch {
+      setSubmitStatus('error')
+    }
+  }
+
+  const submitMessage = {
+    idle: '',
+    submitting: 'Enviando mensaje…',
+    success: '¡Gracias! Recibimos tu mensaje y te contactaremos pronto.',
+    error: 'No pudimos enviar el mensaje. Inténtalo nuevamente.',
+  }[submitStatus]
 
   return (
     <section id="contacto" className="scroll-mt-20 p-3 pb-5 sm:p-5">
@@ -109,7 +147,18 @@ function ContactSection() {
               <div className="card rounded-[1.75rem] bg-white p-6 text-neutral-900 shadow-2xl sm:p-9">
                 <h3 className="text-xl font-semibold tracking-tight">Hablemos</h3>
 
-            <form className="mt-6 space-y-4" onSubmit={event => event.preventDefault()}>
+            <form
+              className="mt-6 space-y-4"
+              onSubmit={handleSubmit}
+              aria-busy={submitStatus === 'submitting'}
+            >
+              <input
+                type="checkbox"
+                name="botcheck"
+                className="hidden"
+                tabIndex={-1}
+                autoComplete="off"
+              />
               <div>
                 <label htmlFor="contact-name" className="sr-only">
                   Nombre
@@ -195,10 +244,20 @@ function ContactSection() {
 
               <button
                 type="submit"
-                className="w-full rounded-full bg-[#70ff47] px-6 py-3.5 font-semibold text-neutral-950 transition hover:bg-[#5ee63a] focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[#70ff47]"
+                disabled={submitStatus === 'submitting'}
+                className="w-full rounded-full bg-[#70ff47] px-6 py-3.5 font-semibold text-neutral-950 transition hover:bg-[#5ee63a] focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[#70ff47] disabled:cursor-wait disabled:opacity-65"
               >
-                Enviar mensaje
+                {submitStatus === 'submitting' ? 'Enviando…' : 'Enviar mensaje'}
               </button>
+              <p
+                className={`min-h-5 text-center text-sm font-medium ${
+                  submitStatus === 'error' ? 'text-red-600' : 'text-emerald-700'
+                }`}
+                role={submitStatus === 'error' ? 'alert' : 'status'}
+                aria-live="polite"
+              >
+                {submitMessage}
+              </p>
                 </form>
               </div>
             </div>
