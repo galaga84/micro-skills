@@ -10,8 +10,9 @@ function Footer() {
       <div className="mx-auto max-w-7xl">
         <div className="grid gap-10 border-b border-neutral-200 pb-12 md:grid-cols-[1fr_auto_auto] md:items-end">
           <div className="max-w-lg">
-            <a href="#inicio" className="text-2xl font-semibold tracking-tight">
-              Micro Skills
+            <a href="#inicio" className="inline-flex text-2xl font-bold tracking-tight">
+              <span className="text-neutral-950">Micro</span>
+              <span className="ml-1.5 text-[#ff8dc6]">Skills</span>
             </a>
             <p className="mt-4 text-lg leading-relaxed text-neutral-600">
               Aprendizaje breve. Impacto real.
