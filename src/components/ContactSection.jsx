@@ -4,6 +4,7 @@ import './ContactSection.css'
 import './HowItWorks.css'
 
 const SECTION_TITLE = '¿Listo para capacitar a tu equipo de una forma más simple?'
+const MESSAGE_MAX_LENGTH = 500
 
 const highlights = [
   'Sin nuevas aplicaciones ni claves de acceso',
@@ -22,6 +23,7 @@ function CheckIcon() {
 function ContactSection() {
   const [isCardVisible, setIsCardVisible] = useState(false)
   const [showContent, setShowContent] = useState(false)
+  const [messageLength, setMessageLength] = useState(0)
   const cardRef = useRef(null)
 
   useEffect(() => {
@@ -176,9 +178,19 @@ function ContactSection() {
                   name="message"
                   rows="4"
                   required
+                  maxLength={MESSAGE_MAX_LENGTH}
+                  aria-describedby="contact-message-count"
+                  onChange={event => setMessageLength(event.target.value.length)}
                   placeholder="Cuéntanos qué necesita tu equipo…"
-                  className="contact-field resize-y"
+                  className="contact-field resize-none"
                 />
+                <p
+                  id="contact-message-count"
+                  className="mt-1.5 text-right text-xs tabular-nums text-neutral-500"
+                  aria-live="polite"
+                >
+                  {messageLength}/{MESSAGE_MAX_LENGTH}
+                </p>
               </div>
 
               <button
